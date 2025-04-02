@@ -7,6 +7,25 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Image x:Name="videoImage" Stretch="Uniform" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"></ColumnDefinition>
+            <ColumnDefinition Width="5*"></ColumnDefinition>
+            <ColumnDefinition Width="5*"></ColumnDefinition>
+            <!--forsettings-->
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <local:GstreamerPlayer x:Name="Screen1"></local:GstreamerPlayer>
+        <local:GstreamerPlayer x:Name="Screen2" Grid.Row="0" Grid.Column="1"></local:GstreamerPlayer>
+        <local:GstreamerPlayer x:Name="Screen3" Grid.Row="0" Grid.Column="2"></local:GstreamerPlayer>
+        <StackPanel Grid.Column="3" Grid.RowSpan="3">
+            <local:GstSetting x:Name="GstSet1"></local:GstSetting>
+            <local:GstSetting x:Name="GstSet2"></local:GstSetting>
+            <local:GstSetting x:Name="GstSet3"></local:GstSetting>
+        </StackPanel>
     </Grid>
 </Window>

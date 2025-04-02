@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="RtspPlayer.GstSetting"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RtspPlayer"
+             mc:Ignorable="d" 
+             >
+    <Grid>
+        
+        <Button Name="btnSettings" Content="⚙" Width="40" Height="40" Click="btnSettings_Click"/>
+        <Popup Name="settingsPopup" Placement="Bottom" StaysOpen="False">
+            <Border Background="White" BorderBrush="Black" BorderThickness="1" Padding="10">
+                <StackPanel>
+                    <TextBlock Text="RTSP Settings" FontWeight="Bold" Margin="0,0,0,10"/>
+                    <TextBlock Text="RTSP URL:"/>
+                    <TextBox Name="txtRtspUrl" Width="300"/>
+
+                    <TextBlock Text="Latency:"/>
+                    <TextBox Name="txtLatency" Width="300"/>
+
+                    <TextBlock Text="Protocols:"/>
+                    <TextBox Name="txtProtocols" Width="300"/>
+
+                    <TextBlock Text="Drop on Latency:"/>
+                    <CheckBox Name="chkDropOnLatency"/>
+
+                    <TextBlock Text="Max Buffers:"/>
+                    <TextBox Name="txtMaxBuffers" Width="300"/>
+
+                    <TextBlock Text="Max Buffers:"/>
+                    <TextBox Name="txtBinBuffer" Width="300"/>
+
+                    <Button Content="Save" Click="btnSave_Click"/>
+                </StackPanel>
+            </Border>
+        </Popup>
+    </Grid>
+</UserControl>
