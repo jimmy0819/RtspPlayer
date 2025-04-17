@@ -26,35 +26,36 @@ namespace RtspPlayer
         string pipelineString11 = "rtspsrc location=rtsp://admin:123456@172.17.30.240/stream1 " +
                         "latency=200 protocols=GST_RTSP_LOWER_TRANS_UDP drop-on-latency=1 ! " +
                         "queue max-size-buffers=10 leaky=downstream ! " +
-                        "rtph265depay ! avdec_h265 ! videoconvert ! videorate ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
+                        "rtph265depay ! h265parse ! avdec_h265  ! videoconvert ! videorate skip-to-first=true ! " +
+                        "video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
         string pipelineString12 = "rtspsrc location=rtsp://admin:123456@172.17.30.241/stream1 " +
                         "latency=200 protocols=GST_RTSP_LOWER_TRANS_TCP drop-on-latency=1 ! " +
                         "queue max-size-buffers=10 leaky=downstream ! " +
-                        "rtph265depay ! h265parse ! avdec_h265 ! videoconvert ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
+                        "rtph265depay ! h265parse ! avdec_h265 ! videoconvert ! videorate skip-to-first=true ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
         string pipelineString13 = "rtspsrc location=rtsp://admin:123456@172.17.30.242/stream1 " +
                         "latency=200 protocols=GST_RTSP_LOWER_TRANS_UDP drop-on-latency=1 ! " +
                         "queue max-size-buffers=10 leaky=downstream ! " +
-                        "rtph265depay ! avdec_h265 ! videoconvert ! videorate ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
+                        "rtph265depay ! h265parse ! avdec_h265 ! videoconvert ! videorate skip-to-first=true ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
         string pipelineString14 = "rtspsrc location=rtsp://admin:123456@172.17.30.243/stream1 " +
                         "latency=200 protocols=GST_RTSP_LOWER_TRANS_TCP drop-on-latency=1 ! " +
                         "queue max-size-buffers=10 leaky=downstream ! " +
-                        "rtph265depay ! h265parse ! avdec_h265 ! videoconvert ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
+                        "rtph265depay ! h265parse ! avdec_h265 ! videoconvert ! videorate skip-to-first=true ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
         string pipelineString15 = "rtspsrc location=rtsp://admin:123456@172.17.30.244/stream1 " +
                         "latency=200 protocols=GST_RTSP_LOWER_TRANS_UDP drop-on-latency=1 ! " +
                         "queue max-size-buffers=10 leaky=downstream ! " +
-                        "rtph265depay ! avdec_h265 ! videoconvert ! videorate ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
+                        "rtph265depay ! h265parse ! avdec_h265 ! videoconvert ! videorate skip-to-first=true ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
         string pipelineString16 = "rtspsrc location=rtsp://admin:123456@172.17.30.245/stream1 " +
                         "latency=200 protocols=GST_RTSP_LOWER_TRANS_TCP drop-on-latency=1 ! " +
                         "queue max-size-buffers=10 leaky=downstream ! " +
-                        "rtph265depay ! h265parse ! avdec_h265 ! videoconvert ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
+                        "rtph265depay ! h265parse ! avdec_h265 ! videoconvert ! videorate skip-to-first=true ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
         string pipelineString17 = "rtspsrc location=rtsp://admin:123456@172.17.30.246/stream1 " +
                         "latency=200 protocols=GST_RTSP_LOWER_TRANS_UDP drop-on-latency=1 ! " +
                         "queue max-size-buffers=10 leaky=downstream ! " +
-                        "rtph265depay ! avdec_h265 ! videoconvert ! videorate ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
+                        "rtph265depay ! h265parse ! avdec_h265 ! videoconvert ! videorate skip-to-first=true ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
         string pipelineString18 = "rtspsrc location=rtsp://admin:123456@172.17.30.247/stream1 " +
                         "latency=200 protocols=GST_RTSP_LOWER_TRANS_TCP drop-on-latency=1 ! " +
                         "queue max-size-buffers=10 leaky=downstream ! " +
-                        "rtph265depay ! h265parse ! avdec_h265 ! videoconvert ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
+                        "rtph265depay ! h265parse ! avdec_h265 ! videoconvert ! videorate skip-to-first=true ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
 
 
         string pipelineString_notUse = "rtspsrc location=rtsp://172.17.30.100:554/chID=3&streamType=main " +

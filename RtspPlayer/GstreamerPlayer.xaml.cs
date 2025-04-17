@@ -126,14 +126,13 @@ namespace RtspPlayer
                 _pipeline = (Pipeline)Parse.Launch(PText);
                 _bus = _pipeline.Bus;
 
-
                 // Start playing
                 InitializeAppSink("outsink");
                 _pipeline.SetState(State.Playing);
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error initializing GStreamer: " + e.Message);
+                MessageBox.Show("Error initializing GStreamer: " + e.Message, "GStreamer Initialization Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         private void InitializeAppSink(string _videoSinkName)

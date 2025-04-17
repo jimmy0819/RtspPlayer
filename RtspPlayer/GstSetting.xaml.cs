@@ -57,7 +57,7 @@ namespace RtspPlayer
                    $"drop-on-latency={(chkDropOnLatency.IsChecked == true ? 1 : 0)} ! " +
                    $"{(chkJitterBuffer.IsChecked == true ? $"rtpjitterbuffer latency={txtLatency.Text} drop-on-latency=0 ! " : "")}" +
                    "queue max-size-buffers=" + txtMaxBuffers.Text + " leaky=downstream ! " +
-                   $"rtph265depay ! avdec_h265 ! videoconvert ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers={txtBinBuffer.Text} drop=true";
+                   $"rtph265depay ! avdec_h265 ! videoconvert ! videorate skip-to-first=true ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers={txtBinBuffer.Text} drop=true";
         }   
         public void ParsePipelineString(string pipeline)
         {
