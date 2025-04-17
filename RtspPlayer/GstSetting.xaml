@@ -25,11 +25,17 @@
                     <TextBlock Text="Drop on Latency:"/>
                     <CheckBox Name="chkDropOnLatency"/>
 
+                    <TextBlock Text="Jitter buffer:"/>
+                    <CheckBox Name="chkJitterBuffer"/>
+
                     <TextBlock Text="Max Buffers:"/>
                     <TextBox Name="txtMaxBuffers" Width="300"/>
 
                     <TextBlock Text="Max Buffers:"/>
                     <TextBox Name="txtBinBuffer" Width="300"/>
+
+                    <TextBlock Text="Main Stream:"/>
+                    <CheckBox Name="chkMainStream" Checked="chkMainStream_Checked" Unchecked="chkMainStream_Unchecked"/>
 
                     <Button Content="Save" Click="btnSave_Click"/>
                 </StackPanel>

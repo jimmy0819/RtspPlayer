@@ -29,6 +29,11 @@ namespace RtspPlayer
         {
             gstP = gstreamerPlayer;
             btnSettings.Content = "⚙"+name;
+            gstreamerPlayer.PipelineTextChanged += parsePipelineString;
+        }
+        private void parsePipelineString(string pipeline)
+        {
+            ParsePipelineString(pipeline);
         }
         private void btnSettings_Click(object sender, RoutedEventArgs e)
         {
@@ -50,6 +55,7 @@ namespace RtspPlayer
                    $"latency={txtLatency.Text} " +
                    $"protocols={txtProtocols.Text} " +
                    $"drop-on-latency={(chkDropOnLatency.IsChecked == true ? 1 : 0)} ! " +
+                   $"{(chkJitterBuffer.IsChecked == true ? $"rtpjitterbuffer latency={txtLatency.Text} drop-on-latency=0 ! " : "")}" +
                    "queue max-size-buffers=" + txtMaxBuffers.Text + " leaky=downstream ! " +
                    $"rtph265depay ! avdec_h265 ! videoconvert ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers={txtBinBuffer.Text} drop=true";
         }   
@@ -65,7 +71,15 @@ namespace RtspPlayer
                     {
                         case "location":
                             txtRtspUrl.Text = keyValue[1];
-                            break;
+                            if (keyValue[1].Contains("/stream0"))
+                            {
+                                chkMainStream.IsChecked = true;
+                            }
+                            else if (keyValue[1].Contains("/stream1"))
+                            {
+                                chkMainStream.IsChecked = false;
+                            }
+                                break;
                         case "latency":
                             txtLatency.Text = keyValue[1];
                             break;
@@ -81,6 +95,9 @@ namespace RtspPlayer
                         case "max-buffers":
                             txtBinBuffer.Text = keyValue[1];
                             break;
+                        case "rtpjitterbuffer":
+                            chkJitterBuffer.IsChecked = true;
+                            break;
                     }
                 }
                 else if(keyValue.Length > 2)
@@ -94,6 +111,44 @@ namespace RtspPlayer
                             txtRtspUrl.Text += "=";
                         }
                     }
+                }
+            }
+        }
+
+        private void chkMainStream_Checked(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtRtspUrl.Text))
+                throw new ArgumentException("Pipeline string cannot be null or empty.", nameof(txtRtspUrl.Text));
+            if(sender is CheckBox checkBox)
+            {
+                if (checkBox.IsChecked == true)
+                {
+                    txtRtspUrl.Text = txtRtspUrl.Text.Replace("/stream1", "/stream0");
+                    
+                }
+                else
+                {
+                    txtRtspUrl.Text = txtRtspUrl.Text.Replace("/stream0", "/stream1");
+                    
+                }
+            }
+        }
+
+        private void chkMainStream_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtRtspUrl.Text))
+                throw new ArgumentException("Pipeline string cannot be null or empty.", nameof(txtRtspUrl.Text));
+            if (sender is CheckBox checkBox)
+            {
+                if (checkBox.IsChecked == true)
+                {
+                    txtRtspUrl.Text = txtRtspUrl.Text.Replace("/stream1", "/stream0");
+
+                }
+                else
+                {
+                    txtRtspUrl.Text = txtRtspUrl.Text.Replace("/stream0", "/stream1");
+
                 }
             }
         }

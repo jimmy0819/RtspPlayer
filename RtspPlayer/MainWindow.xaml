@@ -11,21 +11,34 @@
             <RowDefinition Height="1*"></RowDefinition>
             <RowDefinition Height="1*"></RowDefinition>
             <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>      
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"></ColumnDefinition>
             <ColumnDefinition Width="5*"></ColumnDefinition>
             <ColumnDefinition Width="5*"></ColumnDefinition>
             <ColumnDefinition Width="5*"></ColumnDefinition>
             <!--forsettings-->
             <ColumnDefinition Width="1*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <local:GstreamerPlayer x:Name="Screen1"></local:GstreamerPlayer>
-        <local:GstreamerPlayer x:Name="Screen2" Grid.Row="0" Grid.Column="1"></local:GstreamerPlayer>
-        <local:GstreamerPlayer x:Name="Screen3" Grid.Row="0" Grid.Column="2"></local:GstreamerPlayer>
-        <StackPanel Grid.Column="3" Grid.RowSpan="3">
+        <local:GstreamerPlayer x:Name="Screen1" Grid.RowSpan="3" Grid.ColumnSpan="3" MouseDoubleClick="Screen_MouseDoubleClick"></local:GstreamerPlayer>
+        <local:GstreamerPlayer x:Name="Screen2" Grid.Row="0" Grid.Column="3" MouseDoubleClick="Screen_MouseDoubleClick"></local:GstreamerPlayer>
+        <local:GstreamerPlayer x:Name="Screen3" Grid.Row="1" Grid.Column="3" MouseDoubleClick="Screen_MouseDoubleClick"></local:GstreamerPlayer>
+        <local:GstreamerPlayer x:Name="Screen4" Grid.Row="2" Grid.Column="3" MouseDoubleClick="Screen_MouseDoubleClick"></local:GstreamerPlayer>
+        <local:GstreamerPlayer x:Name="Screen5" Grid.Row="3" Grid.Column="3" MouseDoubleClick="Screen_MouseDoubleClick"></local:GstreamerPlayer>
+        <local:GstreamerPlayer x:Name="Screen6" Grid.Row="3" Grid.Column="0" MouseDoubleClick="Screen_MouseDoubleClick"></local:GstreamerPlayer>
+        <local:GstreamerPlayer x:Name="Screen7" Grid.Row="3" Grid.Column="1" MouseDoubleClick="Screen_MouseDoubleClick"></local:GstreamerPlayer>
+        <local:GstreamerPlayer x:Name="Screen8" Grid.Row="3" Grid.Column="2" MouseDoubleClick="Screen_MouseDoubleClick"></local:GstreamerPlayer>
+        <StackPanel Grid.Column="4" Grid.RowSpan="4">
             <local:GstSetting x:Name="GstSet1"></local:GstSetting>
             <local:GstSetting x:Name="GstSet2"></local:GstSetting>
             <local:GstSetting x:Name="GstSet3"></local:GstSetting>
+            <local:GstSetting x:Name="GstSet4"></local:GstSetting>
+            <local:GstSetting x:Name="GstSet5"></local:GstSetting>
+            <local:GstSetting x:Name="GstSet6"></local:GstSetting>
+            <local:GstSetting x:Name="GstSet7"></local:GstSetting>
+            <local:GstSetting x:Name="GstSet8"></local:GstSetting>
+            <Button x:Name="btn_RefeshAll" Click="btn_RefeshAll_Click" Content="↻" Width="40" Height="40" ></Button>
         </StackPanel>
     </Grid>
 </Window>

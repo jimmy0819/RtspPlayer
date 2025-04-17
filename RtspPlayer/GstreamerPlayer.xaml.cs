@@ -35,6 +35,7 @@ namespace RtspPlayer
         private bool IsSynchronized = false;
         private long _sampleLock = 0;
         private Element appSink;
+
         static string pipelineString10 = "rtspsrc location= rtsp://admin:123456@172.17.30.240/stream1 " +
                         "latency=100 protocols=GST_RTSP_LOWER_TRANS_UDP drop-on-latency=1 ! " +
                         //"rtpjitterbuffer latency=100 drop-on-latency=0 ! " +
@@ -68,15 +69,19 @@ namespace RtspPlayer
             set { SetValue(PipelineTextProperty, value); }
         }
 
+        public event Action<string> PipelineTextChanged;
+
         private static void OnPipelineTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as GstreamerPlayer;
             if (control != null)
             {
-                // Update the UI or trigger logic when the property changes
-                
+                // Invoke the PipelineTextChanged event with the new PipelineText value
+                control.PipelineTextChanged?.Invoke((string)e.NewValue);
             }
         }
+
+        
 
         public void SetPipeLine(string pipeLine)
         {
@@ -87,6 +92,13 @@ namespace RtspPlayer
             ClosePipe();
             InitializeGStreamer();
         }
+
+        public void Refresh()
+        {
+            ClosePipe();
+            InitializeGStreamer();
+        }
+
         public void StartGst()
         {
             InitializeGStreamer();
@@ -296,6 +308,7 @@ namespace RtspPlayer
                     message.ParseError(out ex, out debug);
                     if (_pipeline != null)
                         ClosePipe();
+                        InitializeGStreamer();
                         //Error?.Invoke(this, ex, debug);
                     break;
                 case MessageType.Eos:
@@ -342,10 +355,7 @@ namespace RtspPlayer
                 // Now release resources
                 _pipeline.Dispose();
                 _pipeline = null;
-                // Small delay to ensure cleanup before reinitialization
-                System.Threading.Thread.Sleep(500);
-
-                InitializeGStreamer(); // Restart GStreamer after pipeline cleanup
+                
             }
 
         }
