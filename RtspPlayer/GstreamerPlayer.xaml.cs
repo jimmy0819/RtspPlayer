@@ -52,6 +52,16 @@ namespace RtspPlayer
             InitializeComponent();
         }
 
+        public void SetTag(String word)
+        {
+            TagWord.Text = word;
+        }
+
+        public void SetTagShow(bool show)
+        {
+            TagShow.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+        }
+
         public static readonly DependencyProperty PipelineTextProperty =
             DependencyProperty.Register(
                 "DisplayText",

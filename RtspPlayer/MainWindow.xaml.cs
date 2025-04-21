@@ -109,42 +109,50 @@ namespace RtspPlayer
             pipelineString11 = ChangeToMain(pipelineString11);
             Screen1.PipelineText = pipelineString11;
             Screen1.StartGst();
+            Screen1.SetTag("1");
             GstSet1.AssignGstPlayer(Screen1, "1");
             GstSet1.ParsePipelineString(pipelineString11);
 
             Screen2.PipelineText = pipelineString12;
             Screen2.StartGst();
+            Screen2.SetTag("2");
             GstSet2.AssignGstPlayer(Screen2, "2");
             GstSet2.ParsePipelineString(pipelineString12);
 
             Screen3.PipelineText = pipelineString13;
             Screen3.StartGst();
+            Screen3.SetTag("3");
             GstSet3.AssignGstPlayer(Screen3, "3");
             GstSet3.ParsePipelineString(pipelineString13);
 
             Screen4.PipelineText = pipelineString14;
             Screen4.StartGst();
+            Screen4.SetTag("4");
             GstSet4.AssignGstPlayer(Screen4, "4");
             GstSet4.ParsePipelineString(pipelineString14);
 
             Screen5.PipelineText = pipelineString15;
             Screen5.StartGst();
+            Screen5.SetTag("5");
             GstSet5.AssignGstPlayer(Screen5, "5");
             GstSet5.ParsePipelineString(pipelineString15);
 
             Screen6.PipelineText = pipelineString16;
             Screen6.StartGst();
+            Screen6.SetTag("6");
             GstSet6.AssignGstPlayer(Screen6, "6");
             GstSet6.ParsePipelineString(pipelineString16);
 
 
             Screen7.PipelineText = pipelineString17;
             Screen7.StartGst();
+            Screen7.SetTag("7");
             GstSet7.AssignGstPlayer(Screen7, "7");
             GstSet7.ParsePipelineString(pipelineString17);
 
             Screen8.PipelineText = pipelineString18;
             Screen8.StartGst();
+            Screen8.SetTag("8");
             GstSet8.AssignGstPlayer(Screen8, "8");
             GstSet8.ParsePipelineString(pipelineString18);
 
