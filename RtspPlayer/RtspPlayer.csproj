@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="gstreamer-sharp-netcore" Version="0.0.8" />
+    <PackageReference Include="System.Management" Version="9.0.4" />
   </ItemGroup>
 
 </Project>

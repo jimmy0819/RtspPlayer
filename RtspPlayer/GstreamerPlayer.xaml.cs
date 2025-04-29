@@ -4,18 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Interop;
+using System.Management;
 
 namespace RtspPlayer
 {
@@ -35,6 +28,7 @@ namespace RtspPlayer
         private bool IsSynchronized = false;
         private long _sampleLock = 0;
         private Element appSink;
+        
 
         static string pipelineString10 = "rtspsrc location= rtsp://admin:123456@172.17.30.240/stream1 " +
                         "latency=100 protocols=GST_RTSP_LOWER_TRANS_UDP drop-on-latency=1 ! " +
@@ -145,6 +139,14 @@ namespace RtspPlayer
                 MessageBox.Show("Error initializing GStreamer: " + e.Message, "GStreamer Initialization Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void OnNetworkInterfaceAdded()
+        {
+            // Your logic here
+            MessageBox.Show("New network interface detected!");
+        }
+
+
         private void InitializeAppSink(string _videoSinkName)
         {
             appSink = _pipeline.GetChildByName(_videoSinkName) as Element;

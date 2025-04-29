@@ -14,6 +14,8 @@ using System.Drawing.Imaging;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Windows.Media;
 using System.Numerics;
+using System.Management;
+using System.Net.NetworkInformation;
 
 
 namespace RtspPlayer
@@ -64,6 +66,11 @@ namespace RtspPlayer
                         "rtph265depay ! avdec_h265 ! videoconvert ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
 
         GstreamerPlayer _mainStreamNow;
+
+        private NetworkInterface[] _previousInterfaces;
+
+        private ManagementEventWatcher _watcher;
+
         public GstreamerPlayer MainStreamNow
         {
             get => _mainStreamNow;
@@ -156,6 +163,9 @@ namespace RtspPlayer
             GstSet8.AssignGstPlayer(Screen8, "8");
             GstSet8.ParsePipelineString(pipelineString18);
 
+            _previousInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+
+            NetworkChange.NetworkAddressChanged += OnNetworkAddressChanged;
 
         }
 
@@ -204,5 +214,66 @@ namespace RtspPlayer
                 MainStreamNow.Refresh();
             }
         }
+
+        int TagStatus = 1;
+        private void btn_HideTag_Click(object sender, RoutedEventArgs e)
+        {
+            TagStatus += 1;
+            TagStatus = TagStatus % 2;
+            bool Tagboo = TagStatus == 1;
+            Screen1.SetTagShow(Tagboo);
+            Screen2.SetTagShow(Tagboo);
+            Screen3.SetTagShow(Tagboo);
+            Screen4.SetTagShow(Tagboo);
+            Screen5.SetTagShow(Tagboo);
+            Screen6.SetTagShow(Tagboo);
+            Screen7.SetTagShow(Tagboo);
+            Screen8.SetTagShow(Tagboo);
+        }
+
+        private void OnNetworkAddressChanged(object sender, EventArgs e)
+        {
+            var currentInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+
+            foreach (var nic in currentInterfaces)
+            {
+                var previous = _previousInterfaces.FirstOrDefault(p => p.Id == nic.Id);
+
+                // Check for status change (e.g., Up <-> Down)
+                if (previous != null && previous.OperationalStatus != nic.OperationalStatus)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        OnInterfaceConnectionChanged(nic, previous.OperationalStatus, nic.OperationalStatus);
+                    });
+                }
+            }
+
+            _previousInterfaces = currentInterfaces;
+        }
+
+        private void OnInterfaceConnectionChanged(NetworkInterface nic, OperationalStatus oldStatus, OperationalStatus newStatus)
+        {
+            string message = $"Interface '{nic.Name}' changed from {oldStatus} to {newStatus}";
+            //MessageBox.Show(message);
+            // Optionally log or react here
+            Screen1.Refresh();
+            Screen2.Refresh();
+            Screen3.Refresh();
+            Screen4.Refresh();
+            Screen5.Refresh();
+            Screen6.Refresh();
+            Screen7.Refresh();
+            Screen8.Refresh();
+        }
+        
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            _watcher?.Stop();
+            _watcher?.Dispose();
+        }
+
     }
 }

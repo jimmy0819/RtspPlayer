@@ -39,6 +39,7 @@
             <local:GstSetting x:Name="GstSet7"></local:GstSetting>
             <local:GstSetting x:Name="GstSet8"></local:GstSetting>
             <Button x:Name="btn_RefeshAll" Click="btn_RefeshAll_Click" Content="↻" Width="40" Height="40" ></Button>
+            <Button x:Name="btn_HideTag" Click="btn_HideTag_Click" Content="tag" Width="40" Height="40"></Button>
         </StackPanel>
     </Grid>
 </Window>
