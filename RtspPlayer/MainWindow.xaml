@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RtspPlayer"
         mc:Ignorable="d"
+        
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
@@ -40,6 +41,11 @@
             <local:GstSetting x:Name="GstSet8"></local:GstSetting>
             <Button x:Name="btn_RefeshAll" Click="btn_RefeshAll_Click" Content="↻" Width="40" Height="40" ></Button>
             <Button x:Name="btn_HideTag" Click="btn_HideTag_Click" Content="tag" Width="40" Height="40"></Button>
+            <TextBlock TextWrapping="Wrap" x:Name="PingOutput"></TextBlock>
+            <ComboBox x:Name="InterfaceComboBox" DropDownOpened="InterfaceComboBox_Selected" SelectionChanged="InterfaceComboBox_SelectionChanged"></ComboBox>
+            <TextBlock TextWrapping="Wrap" x:Name="PingOutput2"></TextBlock>
+            <ComboBox x:Name="InterfaceComboBox2" DropDownOpened="InterfaceComboBox2_Selected" SelectionChanged="InterfaceComboBox2_SelectionChanged"></ComboBox>
+
         </StackPanel>
     </Grid>
 </Window>
