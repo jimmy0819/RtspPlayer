@@ -37,6 +37,9 @@
                     <TextBlock Text="Main Stream:"/>
                     <CheckBox Name="chkMainStream" Checked="chkMainStream_Checked" Unchecked="chkMainStream_Unchecked"/>
 
+                    <TextBlock Text="SkipToFirst"/>
+                    <CheckBox Name="chkSkipToFirst"/>
+
                     <Button Content="Save" Click="btnSave_Click"/>
                 </StackPanel>
             </Border>

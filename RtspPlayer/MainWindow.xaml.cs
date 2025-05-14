@@ -69,6 +69,15 @@ namespace RtspPlayer
                         "queue max-size-buffers=20 leaky=downstream ! " +
                         "rtph265depay ! avdec_h265 ! videoconvert ! video/x-raw,format=RGB ! appsink name=outsink sync=false max-buffers=20 drop=true";
 
+        PipelineRtsp pipelineRtsp1 = new PipelineRtsp();
+        PipelineRtsp pipelineRtsp2 = new PipelineRtsp();
+        PipelineRtsp pipelineRtsp3 = new PipelineRtsp();
+        PipelineRtsp pipelineRtsp4 = new PipelineRtsp();
+        PipelineRtsp pipelineRtsp5 = new PipelineRtsp();
+        PipelineRtsp pipelineRtsp6 = new PipelineRtsp();
+        PipelineRtsp pipelineRtsp7 = new PipelineRtsp();
+        PipelineRtsp pipelineRtsp8 = new PipelineRtsp();
+
         GstreamerPlayer _mainStreamNow;
 
         private NetworkInterface[] _previousInterfaces;
@@ -150,6 +159,23 @@ namespace RtspPlayer
                 pipelineString17 = Properties.Settings.Default.Setting7;
             if (!Properties.Settings.Default.Setting8.Equals(""))
                 pipelineString18 = Properties.Settings.Default.Setting8;
+
+            if (!Properties.Settings.Default.Setting1.Equals(""))
+                pipelineRtsp1.ParsePipelineString(Properties.Settings.Default.Setting1);
+            if (!Properties.Settings.Default.Setting2.Equals(""))
+                pipelineRtsp2.ParsePipelineString(Properties.Settings.Default.Setting2);
+            if (!Properties.Settings.Default.Setting3.Equals(""))
+                pipelineRtsp3.ParsePipelineString(Properties.Settings.Default.Setting3);
+            if (!Properties.Settings.Default.Setting4.Equals(""))
+                pipelineRtsp4.ParsePipelineString(Properties.Settings.Default.Setting4);
+            if (!Properties.Settings.Default.Setting5.Equals(""))
+                pipelineRtsp5.ParsePipelineString(Properties.Settings.Default.Setting5);
+            if (!Properties.Settings.Default.Setting6.Equals(""))
+                pipelineRtsp6.ParsePipelineString(Properties.Settings.Default.Setting6);
+            if (!Properties.Settings.Default.Setting7.Equals(""))
+                pipelineRtsp7.ParsePipelineString(Properties.Settings.Default.Setting7);
+            if (!Properties.Settings.Default.Setting8.Equals(""))
+                pipelineRtsp8.ParsePipelineString(Properties.Settings.Default.Setting8);
         }
 
         private PingViaInterface StartPinger(string dest,string face,TextBlock _PingOutput)

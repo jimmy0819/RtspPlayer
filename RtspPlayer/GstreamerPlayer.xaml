@@ -12,6 +12,9 @@
             <Border Background="LightBlue" CornerRadius="5" Padding="4" Margin="2">
                 <TextBlock Text="UnDef"  x:Name="TagWord" Foreground="Black"/>
             </Border>
+            <Border Background="LightBlue" CornerRadius="5" Padding="4" Margin="2">
+                <TextBlock Text="UnDef"  x:Name="TagFlag" Foreground="Black"/>
+            </Border>
         </WrapPanel>
         
     </Grid>

@@ -170,6 +170,13 @@ namespace RtspPlayer
                 }
             }
         }
+        private void UpdateFlag(BufferFlags flag)
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                TagFlag.Text = flag.ToString();
+            }));
+        }
 
         private void RenderTimerProc(object _)
         {
@@ -192,6 +199,7 @@ namespace RtspPlayer
                                 Gst.Buffer buffer = sample.Buffer;
                                 using (buffer)
                                 {
+                                    BufferFlags Bflag = buffer.Flags;
                                     Gst.MapInfo map;
                                     if (buffer.Map(out map, MapFlags.Read))
                                     {
@@ -210,9 +218,10 @@ namespace RtspPlayer
                                         // Since map.Data is already a byte[], we can use it directly
                                         byte[] frameData = map.Data;
 
-
+                                        UpdateFlag(Bflag);
                                         // Update the WPF Image control with the new frame
-                                        UpdateFrame(frameData, width, height);
+                                        if (Bflag == BufferFlags.Corrupted) { } else { }
+                                            UpdateFrame(frameData, width, height);
 
                                         // Unmap the buffer after processing
                                         buffer.Unmap(map);
