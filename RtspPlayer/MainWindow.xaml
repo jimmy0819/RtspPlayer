@@ -20,7 +20,7 @@
             <ColumnDefinition Width="5*"></ColumnDefinition>
             <ColumnDefinition Width="5*"></ColumnDefinition>
             <!--forsettings-->
-            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition MinWidth="80" Width="1*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <local:GstreamerPlayer x:Name="Screen1" Grid.RowSpan="3" Grid.ColumnSpan="3" MouseDoubleClick="Screen_MouseDoubleClick"></local:GstreamerPlayer>
         <local:GstreamerPlayer x:Name="Screen2" Grid.Row="0" Grid.Column="3" MouseDoubleClick="Screen_MouseDoubleClick"></local:GstreamerPlayer>
@@ -30,22 +30,24 @@
         <local:GstreamerPlayer x:Name="Screen6" Grid.Row="3" Grid.Column="0" MouseDoubleClick="Screen_MouseDoubleClick"></local:GstreamerPlayer>
         <local:GstreamerPlayer x:Name="Screen7" Grid.Row="3" Grid.Column="1" MouseDoubleClick="Screen_MouseDoubleClick"></local:GstreamerPlayer>
         <local:GstreamerPlayer x:Name="Screen8" Grid.Row="3" Grid.Column="2" MouseDoubleClick="Screen_MouseDoubleClick"></local:GstreamerPlayer>
-        <StackPanel Grid.Column="4" Grid.RowSpan="4">
-            <local:GstSetting x:Name="GstSet1"></local:GstSetting>
-            <local:GstSetting x:Name="GstSet2"></local:GstSetting>
-            <local:GstSetting x:Name="GstSet3"></local:GstSetting>
-            <local:GstSetting x:Name="GstSet4"></local:GstSetting>
-            <local:GstSetting x:Name="GstSet5"></local:GstSetting>
-            <local:GstSetting x:Name="GstSet6"></local:GstSetting>
-            <local:GstSetting x:Name="GstSet7"></local:GstSetting>
-            <local:GstSetting x:Name="GstSet8"></local:GstSetting>
-            <Button x:Name="btn_RefeshAll" Click="btn_RefeshAll_Click" Content="↻" Width="40" Height="40" ></Button>
-            <Button x:Name="btn_HideTag" Click="btn_HideTag_Click" Content="tag" Width="40" Height="40"></Button>
-            <TextBlock TextWrapping="Wrap" x:Name="PingOutput"></TextBlock>
-            <ComboBox x:Name="InterfaceComboBox" DropDownOpened="InterfaceComboBox_Selected" SelectionChanged="InterfaceComboBox_SelectionChanged"></ComboBox>
-            <TextBlock TextWrapping="Wrap" x:Name="PingOutput2"></TextBlock>
-            <ComboBox x:Name="InterfaceComboBox2" DropDownOpened="InterfaceComboBox2_Selected" SelectionChanged="InterfaceComboBox2_SelectionChanged"></ComboBox>
-
-        </StackPanel>
+        <ScrollViewer Grid.Column="4" Grid.RowSpan="4" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <local:GstSetting x:Name="GstSet1" />
+                <local:GstSetting x:Name="GstSet2" />
+                <local:GstSetting x:Name="GstSet3" />
+                <local:GstSetting x:Name="GstSet4" />
+                <local:GstSetting x:Name="GstSet5" />
+                <local:GstSetting x:Name="GstSet6" />
+                <local:GstSetting x:Name="GstSet7" />
+                <local:GstSetting x:Name="GstSet8" />
+                <Button x:Name="btn_RefeshAll" Click="btn_RefeshAll_Click" Content="↻" Width="40" Height="40" />
+                <Button x:Name="btn_HideTag" Click="btn_HideTag_Click" Content="tag" Width="40" Height="40" />
+                <TextBlock TextWrapping="Wrap" x:Name="PingOutput" />
+                <ComboBox x:Name="InterfaceComboBox" DropDownOpened="InterfaceComboBox_Selected" SelectionChanged="InterfaceComboBox_SelectionChanged" />
+                <TextBlock TextWrapping="Wrap" x:Name="PingOutput2" />
+                <ComboBox x:Name="InterfaceComboBox2" DropDownOpened="InterfaceComboBox2_Selected" SelectionChanged="InterfaceComboBox2_SelectionChanged" />
+                <ComboBox x:Name="ToPingComboBox" SelectionChanged="ToPingComboBox_SelectionChanged"></ComboBox>
+            </StackPanel>
+            </ScrollViewer>
     </Grid>
 </Window>

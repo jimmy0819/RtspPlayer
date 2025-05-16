@@ -84,7 +84,8 @@ namespace RtspPlayer
 
         private ManagementEventWatcher _watcher;
 
-        
+        private string[] TopingIps = { "172.17.30.240", "172.17.30.241", "172.17.30.242", "172.17.30.243",
+            "172.17.30.244", "172.17.30.245", "172.17.30.246", "172.17.30.247", "172.17.30.100" };
 
         public GstreamerPlayer MainStreamNow
         {
@@ -137,7 +138,7 @@ namespace RtspPlayer
             NetworkInterfaceManager networkInterfaceManager = new NetworkInterfaceManager();
 
             _previousInterfaces = NetworkInterface.GetAllNetworkInterfaces();
-
+            ToPingComboBox.ItemsSource = TopingIps;
             NetworkChange.NetworkAddressChanged += OnNetworkAddressChanged;
 
         }
@@ -464,8 +465,8 @@ namespace RtspPlayer
             LoadNetworkInterfaces("1");
         }
 
-        private bool Con1Ping;
-        private bool Con2Ping;
+        private bool Con1Ping = false;
+        private bool Con2Ping = false;
 
         private void InterfaceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -476,7 +477,7 @@ namespace RtspPlayer
             var comboBox = sender as ComboBox;
             if (comboBox?.SelectedItem is NetworkInterfaceInfo selectedInterface)
             {
-                pinger = StartPinger("172.17.30.242",selectedInterface.IPAddress, PingOutput);
+                pinger = StartPinger(ipToping, selectedInterface.IPAddress, PingOutput);
                 pinger.PingStatusChanged += (s, success) =>
                 { 
                     Con1Ping = success;
@@ -487,6 +488,7 @@ namespace RtspPlayer
         }
         private NetworkInterfaceInfo con1;
         private NetworkInterfaceInfo con2;
+        private string ipToping = "172.17.30.242";
         private void InterfaceComboBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (pinger2 != null) { 
@@ -496,7 +498,7 @@ namespace RtspPlayer
             var comboBox = sender as ComboBox;
             if (comboBox?.SelectedItem is NetworkInterfaceInfo selectedInterface)
             {
-                pinger2 = StartPinger("172.17.30.242", selectedInterface.IPAddress, PingOutput2);
+                pinger2 = StartPinger(ipToping, selectedInterface.IPAddress, PingOutput2);
                 pinger2.PingStatusChanged += (s, success) =>
                 {
                     Con2Ping = success;
@@ -506,6 +508,9 @@ namespace RtspPlayer
             }
 
         }
+
+
+
 
         private int prestate = 0;
 
@@ -562,17 +567,25 @@ namespace RtspPlayer
             NetworkInterfaceInfoForRoutes route2 = null;
 
             string mask = "255.255.255.255";
-            string Dest = "172.17.30.242";
+            string Dest = ipToping;
             int matBig = 40;
             int matsmol = 1;
             if (con1 != null) 
             {
                 route1 = manager.GetByIpAddress(con1.IPAddress);
             }
-            if(con2 != null)
+            else
+            {
+                return;
+            }
+            if (con2 != null)
             {
 
                 route2 = manager.GetByIpAddress(con2.IPAddress);
+            }
+            else
+            {
+                return;
             }
             if (Con1Ping == true && Con2Ping == true)//11
             {
@@ -591,7 +604,7 @@ namespace RtspPlayer
                         break;
                     case 1:// 01 to 11
                            //change to main
-                        if(route1 != null && route2 != null)
+                        if (route1 != null && route2 != null)
                         {
                             SwitchToMain(Dest, mask, "172.17.30.1", matsmol, matBig, route1, route2);
                         }
@@ -698,6 +711,48 @@ namespace RtspPlayer
         private void InterfaceComboBox2_Selected(object sender, EventArgs e)
         {
             LoadNetworkInterfaces("2");
+        }
+
+        private void ToPingComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var comboBox = sender as ComboBox;
+            if (comboBox?.SelectedItem is string selectedIP)
+            {
+                ipToping = (string)comboBox.SelectedItem;
+                if (pinger != null)
+                {
+                    pinger.Dispose();
+                    pinger = null;
+                }
+                
+                if (con1 is NetworkInterfaceInfo selectedInterface)
+                {
+                    pinger = StartPinger(selectedIP, selectedInterface.IPAddress, PingOutput);
+                    pinger.PingStatusChanged += (s, success) =>
+                    {
+                        Con1Ping = success;
+                        con1 = selectedInterface;
+                        CheckFailOver();
+                    };
+                }
+
+                if (pinger2 != null)
+                {
+                    pinger2.Dispose();
+                    pinger2 = null;
+                }
+                
+                if (con2 is NetworkInterfaceInfo selectedInterface2)
+                {
+                    pinger2 = StartPinger(selectedIP, selectedInterface2.IPAddress, PingOutput2);
+                    pinger2.PingStatusChanged += (s, success) =>
+                    {
+                        Con2Ping = success;
+                        con2 = selectedInterface2;
+                        CheckFailOver();
+                    };
+                }
+            }
         }
     }
 
