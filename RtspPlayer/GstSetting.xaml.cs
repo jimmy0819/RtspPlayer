@@ -98,7 +98,9 @@ namespace RtspPlayer
             txtMaxBuffers.Text = newpipe.MaxBuffers.ToString();
                             
             txtBinBuffer.Text = newpipe.MaxSizeBuffers.ToString();
-                            
+
+            chkSkipToFirst.IsChecked = newpipe.SkipToFirst;
+
         }
 
         private void chkMainStream_Checked(object sender, RoutedEventArgs e)

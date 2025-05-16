@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Management;
 
+
 namespace RtspPlayer
 {
     /// <summary>
@@ -28,7 +29,8 @@ namespace RtspPlayer
         private bool IsSynchronized = false;
         private long _sampleLock = 0;
         private Element appSink;
-        
+        private AppSink RealappSink;
+
 
         static string pipelineString10 = "rtspsrc location= rtsp://admin:123456@172.17.30.240/stream1 " +
                         "latency=100 protocols=GST_RTSP_LOWER_TRANS_UDP drop-on-latency=1 ! " +
@@ -114,7 +116,7 @@ namespace RtspPlayer
             Environment.SetEnvironmentVariable("GST_DEBUG", "4"); // Set verbosity level
 
             // Set GStreamer Path before initialization
-            GStreamerSetup.SetGSTPath(@"C:\Program Files\gstreamer\1.0\mingw_x86_64");
+            GStreamerSetup.SetGSTPath(@"C:\Program Files\gstreamer\1.0\x86_64");
             //C:\gstreamerIns\bin
             //GStreamerSetup.SetGSTPath(@"C:\Program Files\gstreamer\1.0\msvc_x86_64");
 
@@ -151,6 +153,16 @@ namespace RtspPlayer
         {
             appSink = _pipeline.GetChildByName(_videoSinkName) as Element;
 
+            if (appSink == null)
+            {
+                Console.WriteLine("Failed to find appsink element.");
+                return;
+            }
+            //appSink.SetProperty("emit-signals", new GLib.Value(true));
+            //RealappSink = new AppSink(appSink.Handle); // if appSink is a Gst.Element
+            //RealappSink.EmitSignals = true;
+            //RealappSink.NewSample += OnNewSample;
+
             _renderTimer = new Timer(RenderTimerProc, this, 0, 1000 / _renderTimerFrequency);
             _messageTimer = new Timer(MessageTimerProc, this, 0, 1000 / _messageTimerFrequency);
         }
@@ -176,6 +188,43 @@ namespace RtspPlayer
             {
                 TagFlag.Text = flag.ToString();
             }));
+        }
+
+        private void OnNewSample(object sender, GLib.SignalArgs args)
+        {
+            var sink = sender as AppSink;
+            var sample = sink.PullSample();
+
+            if (sample != null)
+            {
+                using (sample)
+                {
+                    var buffer = sample.Buffer;
+                    if (buffer != null)
+                    {
+                        using (buffer)
+                        {
+                            var flags = buffer.Flags;
+                            Console.WriteLine($"Buffer Flags: {flags}");
+
+                            if (buffer.Map(out Gst.MapInfo map, Gst.MapFlags.Read))
+                            {
+                                var structure = sample.Caps.GetStructure(0);
+                                structure.GetInt("width", out var width);
+                                structure.GetInt("height", out var height);
+
+                                byte[] data = map.Data;
+
+                                UpdateFlag(flags);
+                                if (flags != BufferFlags.Corrupted)
+                                    UpdateFrame(data, width, height);
+
+                                buffer.Unmap(map);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void RenderTimerProc(object _)
@@ -353,6 +402,7 @@ namespace RtspPlayer
                 _messageTimer?.Dispose();
                 _messageTimer = null;
 
+
                 // Properly shut down the pipeline
                 _pipeline.SetState(State.Null);
 
@@ -369,6 +419,9 @@ namespace RtspPlayer
                 _bus = null;
 
                 // Dispose of the app sink
+                //RealappSink.NewSample -= OnNewSample;
+                //RealappSink?.Dispose();
+                //RealappSink = null;
                 appSink?.Dispose();
                 appSink = null;
 
