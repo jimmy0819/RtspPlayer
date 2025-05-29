@@ -139,6 +139,7 @@ namespace RtspPlayer
 
             _previousInterfaces = NetworkInterface.GetAllNetworkInterfaces();
             ToPingComboBox.ItemsSource = TopingIps;
+            CbbToOff.ItemsSource = allToOff;
             NetworkChange.NetworkAddressChanged += OnNetworkAddressChanged;
 
         }
@@ -248,6 +249,11 @@ namespace RtspPlayer
             {
                 Screen1.PipelineText = pipelineString11;
             }
+            Screen1.PipelineText = "{rtspsrc location=rtsp://admin:123456@172.17.30.240/stream0 latency=10 protocols=GST_RTSP_LOWER_TRANS_UDP drop-on-latency=1 " +
+                "! queue max-size-buffers=10 leaky=downstream " +
+                "! rtph264depay ! h264parse ! avdec_h264 ! videoconvert " +
+                "! videorate skip-to-first=true ! video/x-raw,format=RGB " +
+                "! appsink name=outsink sync=false max-buffers=10 drop=true}";
             Screen1.StartGst();
             Screen1.SetTag("1");
             GstSet1.AssignGstPlayer(Screen1, "1");
@@ -515,10 +521,45 @@ namespace RtspPlayer
         private int prestate = 0;
 
         private System.DateTime _lastSwitchTime = System.DateTime.MinValue;
-        private readonly TimeSpan _minimumInterval = TimeSpan.FromSeconds(5);
+        private readonly TimeSpan _minimumInterval = TimeSpan.FromSeconds(2);
         private int sleepTime = 500;
 
         private bool Ismain = true;
+
+        private void SwitchToMainManual(string Dest, string mask, string gate, int matsmol, int matBig, NetworkInterfaceInfoForRoutes route1, NetworkInterfaceInfoForRoutes route2)
+        {
+            if(route1 != null && route2 != null)
+            {
+
+            }
+            else
+            {
+                return;
+            }
+
+                failoverRouteManager.DeleteRoute(Dest);
+            failoverRouteManager.AddOrUpdateRoute(Dest, mask, gate, matsmol, route1.InterfaceIndex);
+            failoverRouteManager.AddOrUpdateRoute(Dest, mask, gate, matBig, route2.InterfaceIndex);
+           
+            failoverRouteManager.DisableInterface(route2.InterfaceName);
+            System.Threading.Thread.Sleep(sleepTime); // Blocks the thread for 200 milliseconds
+            failoverRouteManager.EnableInterface(route2.InterfaceName);
+            failoverRouteManager.AddOrUpdateRoute(Dest, mask, gate, matsmol, route1.InterfaceIndex);
+            failoverRouteManager.AddOrUpdateRoute(Dest, mask, gate, matBig, route2.InterfaceIndex);
+            failoverRouteManager.DeleteCache();
+
+            System.Threading.Thread.Sleep(sleepTime);
+            Screen1.Refresh();
+            Screen2.Refresh();
+            Screen3.Refresh();
+            Screen4.Refresh();
+            Screen5.Refresh();
+            Screen6.Refresh();
+            Screen7.Refresh();
+            Screen8.Refresh();
+        }
+
+
         private void SwitchToMain(string Dest,string mask,string gate ,int matsmol,int matBig, NetworkInterfaceInfoForRoutes route1, NetworkInterfaceInfoForRoutes route2) 
         {
             if ((System.DateTime.Now - _lastSwitchTime) < _minimumInterval)
@@ -527,18 +568,42 @@ namespace RtspPlayer
             _lastSwitchTime = System.DateTime.Now;
 
             Ismain = true;
-            //failoverRouteManager.DeleteRoute(Dest);
-            //failoverRouteManager.AddOrUpdateRoute(Dest, mask, gate, matsmol, route1.InterfaceIndex);
-            //failoverRouteManager.AddOrUpdateRoute(Dest, mask, gate, matBig, route2.InterfaceIndex);
-            while (!Con1Ping)
-            {
-                System.Threading.Thread.Sleep(sleepTime);
-            }
-            failoverRouteManager.DisableInterface(route2.InterfaceName);
-            System.Threading.Thread.Sleep(sleepTime); // Blocks the thread for 200 milliseconds
-            failoverRouteManager.EnableInterface(route2.InterfaceName);
-            //failoverRouteManager.DeleteCache();
+            SwitchToMainManual(Dest, mask, "0.0.0.0", matsmol, matBig, route1, route2);
         }
+
+        private void SwitchToSecondManual(string Dest, string mask, string gate, int matsmol, int matBig, NetworkInterfaceInfoForRoutes route1, NetworkInterfaceInfoForRoutes route2)
+        {
+            if (route1 != null && route2 != null)
+            {
+
+            }
+            else
+            {
+                return;
+            }
+
+            failoverRouteManager.DeleteRoute(Dest);
+            failoverRouteManager.AddOrUpdateRoute(Dest, mask, gate, matsmol, route2.InterfaceIndex);
+            failoverRouteManager.AddOrUpdateRoute(Dest, mask, gate, matBig, route1.InterfaceIndex);
+            failoverRouteManager.DisableInterface(route1.InterfaceName);
+            System.Threading.Thread.Sleep(sleepTime); // Blocks the thread for 200 milliseconds
+            failoverRouteManager.EnableInterface(route1.InterfaceName);
+            failoverRouteManager.AddOrUpdateRoute(Dest, mask, gate, matsmol, route2.InterfaceIndex);
+            failoverRouteManager.AddOrUpdateRoute(Dest, mask, gate, matBig, route1.InterfaceIndex);
+            failoverRouteManager.DeleteCache();
+
+            System.Threading.Thread.Sleep(sleepTime);
+            Screen1.Refresh();
+            Screen2.Refresh();
+            Screen3.Refresh();
+            Screen4.Refresh();
+            Screen5.Refresh();
+            Screen6.Refresh();
+            Screen7.Refresh();
+            Screen8.Refresh();
+        }
+
+
         private void SwitchToSecond(string Dest, string mask, string gate, int matsmol, int matBig, NetworkInterfaceInfoForRoutes route1, NetworkInterfaceInfoForRoutes route2)
         {
             if ((System.DateTime.Now - _lastSwitchTime) < _minimumInterval)
@@ -547,27 +612,19 @@ namespace RtspPlayer
             _lastSwitchTime = System.DateTime.Now;
 
             Ismain = false;
-            while (!Con2Ping)
-            {
-                System.Threading.Thread.Sleep(sleepTime);
-            }
-            //failoverRouteManager.DeleteRoute(Dest);
-            //failoverRouteManager.AddOrUpdateRoute(Dest, mask, "172.17.30.1", matsmol, route2.InterfaceIndex);
-            //failoverRouteManager.AddOrUpdateRoute(Dest, mask, "172.17.30.1", matBig, route1.InterfaceIndex);
-            failoverRouteManager.DisableInterface(route1.InterfaceName);
-            System.Threading.Thread.Sleep(sleepTime); // Blocks the thread for 200 milliseconds
-            failoverRouteManager.EnableInterface(route1.InterfaceName);
-            //failoverRouteManager.DeleteCache();
+            SwitchToSecondManual(Dest, mask, "0.0.0.0", matsmol, matBig, route1, route2);
         }
 
         private void CheckFailOver()
         {
+            if (!DoAutoSwitch) { return; }
             NetworkInterfaceManager manager = new NetworkInterfaceManager();
             NetworkInterfaceInfoForRoutes route1 = null;
             NetworkInterfaceInfoForRoutes route2 = null;
 
-            string mask = "255.255.255.255";
-            string Dest = ipToping;
+            string mask = "255.255.255.0";
+            string Dest = "172.17.30.0";
+            string gate = "0.0.0.0";
             int matBig = 40;
             int matsmol = 1;
             if (con1 != null) 
@@ -596,7 +653,7 @@ namespace RtspPlayer
                         if (!Ismain)
                         {
                             if (route1 != null && route2 != null)
-                                SwitchToMain(Dest, mask, "172.17.30.1", matsmol, matBig, route1, route2);
+                                SwitchToMain(Dest, mask, gate, matsmol, matBig, route1, route2);
                         }
                         break;
                     case 2://10 to 11
@@ -606,14 +663,14 @@ namespace RtspPlayer
                            //change to main
                         if (route1 != null && route2 != null)
                         {
-                            SwitchToMain(Dest, mask, "172.17.30.1", matsmol, matBig, route1, route2);
+                            SwitchToMain(Dest, mask, gate, matsmol, matBig, route1, route2);
                         }
                         break;
                     case 0:// 00 to 11
                         //change to main
                         if (route1 != null && route2 != null)
                         {
-                            SwitchToMain(Dest, mask, "172.17.30.1", matsmol, matBig, route1, route2);
+                            SwitchToMain(Dest, mask, gate, matsmol, matBig, route1, route2);
                         }
                         break;
                 }
@@ -631,21 +688,21 @@ namespace RtspPlayer
                         if (!Ismain)
                         {
                             if (route1 != null && route2 != null)
-                                SwitchToMain(Dest, mask, "172.17.30.1", matsmol, matBig, route1, route2);
+                                SwitchToMain(Dest, mask, gate, matsmol, matBig, route1, route2);
                         }
                         break;
                     case 1:// 01 to 10
                         //main
                         if (route1 != null && route2 != null)
                         {
-                            SwitchToMain(Dest, mask, "172.17.30.1", matsmol, matBig, route1, route2);
+                            SwitchToMain(Dest, mask, gate, matsmol, matBig, route1, route2);
                         }
                         break;
                     case 0:// 00 to 10
                         //main
                         if (route1 != null && route2 != null)
                         {
-                            SwitchToMain(Dest, mask, "172.17.30.1", matsmol, matBig, route1, route2);
+                            SwitchToMain(Dest, mask, gate, matsmol, matBig, route1, route2);
                         }
                         break;
                 }
@@ -659,14 +716,14 @@ namespace RtspPlayer
                         //sec
                         if (route1 != null && route2 != null)
                         {
-                            SwitchToSecond(Dest, mask, "172.17.30.1", matsmol, matBig, route1, route2);
+                            SwitchToSecond(Dest, mask, gate, matsmol, matBig, route1, route2);
                         }
                         break;
                     case 2://10 to 01
                         //sec
                         if (route1 != null && route2 != null)
                         {
-                            SwitchToSecond(Dest, mask, "172.17.30.1", matsmol, matBig, route1, route2);
+                            SwitchToSecond(Dest, mask, gate, matsmol, matBig, route1, route2);
                         }
                         break;
                     case 1:// 01 to 01
@@ -674,14 +731,14 @@ namespace RtspPlayer
                         if (Ismain)
                         {
                             if (route1 != null && route2 != null)
-                                SwitchToSecond(Dest, mask, "172.17.30.1", matsmol, matBig, route1, route2);
+                                SwitchToSecond(Dest, mask, gate, matsmol, matBig, route1, route2);
                         }
                         break;
                     case 0:// 00 to 01
                         //sec
                         if (route1 != null && route2 != null)
                         {
-                            SwitchToSecond(Dest, mask, "172.17.30.1", matsmol, matBig, route1, route2);
+                            SwitchToSecond(Dest, mask, gate, matsmol, matBig, route1, route2);
                         }
                         break;
                 }
@@ -752,6 +809,133 @@ namespace RtspPlayer
                         CheckFailOver();
                     };
                 }
+            }
+        }
+
+        private bool DoAutoSwitch;
+
+        private void ChkAutoSwitch_Checked(object sender, RoutedEventArgs e)
+        {
+            Dispatcher.Invoke(() => {
+                if (sender is CheckBox checkBox)
+                {
+                    DoAutoSwitch = checkBox.IsChecked == true;
+                }
+            });
+        }
+        private void ChkAutoSwitch_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Dispatcher.Invoke(() => {
+                if (sender is CheckBox checkBox)
+                {
+                    DoAutoSwitch = checkBox.IsChecked == true;
+                }
+            });
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            NetworkInterfaceManager manager = new NetworkInterfaceManager();
+            NetworkInterfaceInfoForRoutes route1 = null;
+            NetworkInterfaceInfoForRoutes route2 = null;
+
+            string mask = "255.255.255.0";
+            string Dest = "172.17.30.0";
+            int matBig = 40;
+            int matsmol = 1;
+            //change to ch1
+            if (con1 != null)
+            {
+                route1 = manager.GetByIpAddress(con1.IPAddress);
+            }
+            else
+            {
+                return;
+            }
+            if (con2 != null)
+            {
+
+                route2 = manager.GetByIpAddress(con2.IPAddress);
+            }
+            else
+            {
+                return;
+            }
+            SwitchToMainManual(Dest, mask, "0.0.0.0", matsmol, matBig, route1, route2);
+
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            NetworkInterfaceManager manager = new NetworkInterfaceManager();
+            NetworkInterfaceInfoForRoutes route1 = null;
+            NetworkInterfaceInfoForRoutes route2 = null;
+
+            string mask = "255.255.255.0";
+            string Dest = "172.17.30.0";
+            int matBig = 40;
+            int matsmol = 1;
+            //change to ch1
+            if (con1 != null)
+            {
+                route1 = manager.GetByIpAddress(con1.IPAddress);
+            }
+            else
+            {
+                return;
+            }
+            if (con2 != null)
+            {
+
+                route2 = manager.GetByIpAddress(con2.IPAddress);
+            }
+            else
+            {
+                return;
+            }
+            SwitchToSecondManual(Dest, mask, "0.0.0.0", matsmol, matBig, route1, route2);
+        }
+        string ToOff = "";
+        string[] allToOff = new string[] { "1","2","3","4","5","6","7","8"};
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            //off
+            switch (ToOff)
+            {
+                case "1":
+                Screen1.Off();
+                break;
+                case "2":
+                Screen2.Off();
+                break;
+                case "3":
+                Screen3.Off();
+                break;
+                case "4":
+                Screen4.Off();
+                break;
+                case "5":
+                Screen5.Off();
+                break;
+                case "6":
+                Screen6.Off();
+                break;
+                case "7":
+                Screen7.Off();
+                break;
+                case "8":
+                Screen8.Off();
+                break;
+                    
+            }
+        }
+
+        private void CbbToOff_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var comboBox = sender as ComboBox;
+            if (comboBox?.SelectedItem is string To_Off) 
+            {
+                ToOff = To_Off;
             }
         }
     }

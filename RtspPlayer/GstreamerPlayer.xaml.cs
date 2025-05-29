@@ -110,6 +110,11 @@ namespace RtspPlayer
             InitializeGStreamer();
         }
 
+        public void Off()
+        {
+            ClosePipe();
+        }
+
         public void InitializeGStreamer()
         {
             // Set GST_DEBUG level before initializing GStreamer
@@ -164,7 +169,7 @@ namespace RtspPlayer
             //RealappSink.NewSample += OnNewSample;
 
             _renderTimer = new Timer(RenderTimerProc, this, 0, 1000 / _renderTimerFrequency);
-            _messageTimer = new Timer(MessageTimerProc, this, 0, 1000 / _messageTimerFrequency);
+           // _messageTimer = new Timer(MessageTimerProc, this, 0, 1000 / _messageTimerFrequency);
         }
 
         private void MessageTimerProc(object _)

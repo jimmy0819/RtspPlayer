@@ -47,6 +47,12 @@
                 <TextBlock TextWrapping="Wrap" x:Name="PingOutput2" />
                 <ComboBox x:Name="InterfaceComboBox2" DropDownOpened="InterfaceComboBox2_Selected" SelectionChanged="InterfaceComboBox2_SelectionChanged" />
                 <ComboBox x:Name="ToPingComboBox" SelectionChanged="ToPingComboBox_SelectionChanged"></ComboBox>
+                <TextBlock>autoSwitch</TextBlock>
+                <CheckBox x:Name="ChkAutoSwitch" Checked="ChkAutoSwitch_Checked" Unchecked="ChkAutoSwitch_Unchecked"></CheckBox>
+                <Button Content="Ch1" Click="Button_Click"></Button>
+                <Button Content="Ch2" Click='Button_Click_1'></Button>
+                <ComboBox x:Name="CbbToOff" SelectionChanged ="CbbToOff_SelectionChanged"></ComboBox>
+                <Button Content="Off" Click='Button_Click_2'></Button>
             </StackPanel>
             </ScrollViewer>
     </Grid>
