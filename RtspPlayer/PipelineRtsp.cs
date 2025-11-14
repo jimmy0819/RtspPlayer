@@ -53,7 +53,11 @@ namespace RtspPlayer
                    $"rtpjitterbuffer latency={Latency} drop-on-latency={DropOnLatency} do-lost=true do-retransmission=true ! " 
                    : "")}" +
                    $"queue max-size-buffers={MaxBuffers} leaky=downstream ! " +
-                   $"rtph265depay ! h265parse ! avdec_h265 ! videoconvert ! videorate skip-to-first={(SkipToFirst == true ? "true":"false")} ! video/x-raw,format=RGB ! " +
+                   $"rtph265depay ! h265parse config-interval=1 "+
+                   "! video/x-h265"+
+                   ",alignment=au"+
+                   ",stream-format=byte-stream"+
+                   $"! decodebin ! videoconvert ! videorate skip-to-first={(SkipToFirst == true ? "true":"false")} ! video/x-raw,format=RGB ! " +
                    $"appsink name=outsink sync=false max-buffers={MaxBuffers} drop={(Drop == true? "true" : "false")}";
         }
         public void ParsePipelineString(string pipeline)
@@ -110,14 +114,24 @@ namespace RtspPlayer
                 }
                 else if (keyValue.Length > 2)
                 {
+                    
                     for (int i = 1; i < keyValue.Length; i++)
                     {
-
-                        Location += keyValue[i];
-                        if (i != keyValue.Length - 1)
+                        if (keyValue[i].Equals("video/x-h265,alignment")||
+                            keyValue[i].Equals("au,stream-format") ||
+                            keyValue[i].Equals("byte-stream!"))
                         {
-                            //not last
-                            Location += "=";
+
+                        }
+                        else
+                        {
+
+                            Location += keyValue[i];
+                            if (i != keyValue.Length - 1)
+                            {
+                                //not last
+                                Location += "=";
+                            }
                         }
                     }
                 }
