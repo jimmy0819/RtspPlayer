@@ -195,42 +195,42 @@ namespace RtspPlayer
             }));
         }
 
-        private void OnNewSample(object sender, GLib.SignalArgs args)
-        {
-            var sink = sender as AppSink;
-            var sample = sink.PullSample();
+        //private void OnNewSample(object sender, GLib.SignalArgs args) obselete
+        //{
+        //    var sink = sender as AppSink;
+        //    var sample = sink.PullSample();
 
-            if (sample != null)
-            {
-                using (sample)
-                {
-                    var buffer = sample.Buffer;
-                    if (buffer != null)
-                    {
-                        using (buffer)
-                        {
-                            var flags = buffer.Flags;
-                            Console.WriteLine($"Buffer Flags: {flags}");
+        //    if (sample != null)
+        //    {
+        //        using (sample)
+        //        {
+        //            var buffer = sample.Buffer;
+        //            if (buffer != null)
+        //            {
+        //                using (buffer)
+        //                {
+        //                    var flags = buffer.Flags;
+        //                    Console.WriteLine($"Buffer Flags: {flags}");
 
-                            if (buffer.Map(out Gst.MapInfo map, Gst.MapFlags.Read))
-                            {
-                                var structure = sample.Caps.GetStructure(0);
-                                structure.GetInt("width", out var width);
-                                structure.GetInt("height", out var height);
+        //                    if (buffer.Map(out Gst.MapInfo map, Gst.MapFlags.Read))
+        //                    {
+        //                        var structure = sample.Caps.GetStructure(0);
+        //                        structure.GetInt("width", out var width);
+        //                        structure.GetInt("height", out var height);
 
-                                byte[] data = map.Data;
+        //                        byte[] data = map.Data;
 
-                                UpdateFlag(flags);
-                                if (flags != BufferFlags.Corrupted)
-                                    UpdateFrame(data, width, height);
+        //                        UpdateFlag(flags);
+        //                        if (flags != BufferFlags.Corrupted)
+        //                            UpdateFrame(data, width, height);
 
-                                buffer.Unmap(map);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        //                        buffer.Unmap(map);
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         private void RenderTimerProc(object _)
         {
